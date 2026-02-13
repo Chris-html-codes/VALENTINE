@@ -25,7 +25,6 @@
             transition: background-color 1s ease;
         }
 
-        /* 1. Background Animations */
         .floating-heart {
             position: absolute;
             color: var(--pink);
@@ -52,7 +51,6 @@
             to { transform: translateY(110vh) rotate(720deg); }
         }
 
-        /* 2. UI Elements */
         #timer {
             margin-bottom: 10px;
             color: var(--dark-pink);
@@ -274,13 +272,11 @@
         let x, y;
         let isOverlapping = true;
 
-        // Collision Check: Keep calculating new X/Y until it's away from the Yes button
         while (isOverlapping) {
             x = Math.max(padding, Math.floor(Math.random() * (window.innerWidth - noBtn.offsetWidth - padding)));
             y = Math.max(padding, Math.floor(Math.random() * (window.innerHeight - noBtn.offsetHeight - (padding * 2.5))));
 
-            // Check if the new X/Y coordinates overlap with the Yes button's current area
-            const buffer = 20; // Extra breathing room
+            const buffer = 20;
             isOverlapping = (
                 x < yesRect.right + buffer &&
                 x + noBtn.offsetWidth > yesRect.left - buffer &&
@@ -329,4 +325,5 @@
 </script>
 
 </body>
+
 </html>
