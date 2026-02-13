@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For you, Arcy ❤️</title>
+    <style>
+        :root {
+            --pink: #ff4d6d;
+            --dark-pink: #c9184a;
+            --court-green: #2d6a4f;
+            --bg: #fff5f7;
+        }
+
+        body {
+            background-color: var(--bg);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
+            transition: background-color 1s ease;
+        }
+
+        /* 1. Background Animations */
+        .floating-heart {
+            position: absolute;
+            color: var(--pink);
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp 4s linear forwards;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            z-index: 1000;
+            animation: fall 3s linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(720deg); }
+        }
+
+        /* 2. UI Elements */
+        #timer {
+            margin-bottom: 10px;
+            color: var(--dark-pink);
+            font-weight: bold;
+            font-size: 0.85rem;
+            background: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.1);
+            z-index: 100;
+            border: 1px solid #ffccd5;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(255, 77, 109, 0.15);
+            text-align: center;
+            width: 320px;
+            z-index: 100;
+            position: relative;
+        }
+
+        .main-emoji { 
+            font-size: 65px; 
+            display: block; 
+            margin-bottom: 10px;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            min-height: 50px;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        #yesBtn { background: var(--pink); color: white; z-index: 101; }
+        #noBtn { background: #6c757d; color: white; touch-action: none; position: relative; z-index: 1000; }
+
+        .hint-text {
+            margin-top: 15px;
+            font-size: 0.75rem;
+            color: var(--dark-pink);
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+            display: none; 
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+
+        .option {
+            padding: 12px;
+            border: 2px solid #fff0f3;
+            border-radius: 12px;
+            cursor: pointer;
+            background: #fff;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .option:hover { border-color: var(--pink); background: #fffafb; }
+
+        #planner, #success { display: none; }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #d63384;
+            z-index: 50;
+            line-height: 1.4;
+        }
+
+        #shuttlecock {
+            position: fixed;
+            font-size: 30px;
+            display: none;
+            z-index: 99;
+        }
+    </style>
+</head>
+<body>
+
+<div id="timer">KONTING TIIS NALANG...</div>
+
+<div class="card" id="mainCard">
+    <div id="ask">
+        <span class="main-emoji" id="face">🥺</span>
+        <h2 style="color: var(--dark-pink); margin: 0;">Be My Valentine?</h2>
+        <p style="color: #666; font-size: 0.85rem; line-height: 1.5;">
+            LDR na nga tayo, tatanggihan mo pa ba ako? <br>
+            <b>Canton</b> dito, <b>Fries</b> dyan, pero sana magkasama tayo bukas <b>Diba?</b> Date tayo?
+        </p>
+        <div class="btn-container">
+            <button id="yesBtn" onclick="showPlanner()">Sige! ❤️</button>
+            <button id="noBtn">Ayoko</button>
+        </div>
+    </div>
+
+    <div id="planner">
+        <span class="main-emoji">💖</span>
+        <h2 style="color: var(--dark-pink); margin: 0;">Yown! Ano plano?</h2>
+        <div class="grid">
+            <div class="option" onclick="finalize('Kwentuhan at Kulitan 💬')">Kwentuhan at Kulitan 💬</div>
+            <div class="option" onclick="finalize('Movie Marathon 🍿')">Movie Marathon 🍿</div>
+            <div class="option" onclick="finalize('Badminton Strategy 🏸')">Badminton Prep (Feb 18!) 🏸</div>
+        </div>
+    </div>
+
+    <div id="success">
+        <span class="main-emoji">🏸✨</span>
+        <h2 id="successTitle" style="color: var(--dark-pink); margin: 0;">It's a date!</h2>
+        <p id="finalMsg" style="color: #444; margin-top: 15px; font-size: 0.95rem;"></p>
+        <p style="font-size: 0.8rem; color: #555; margin-top: 20px;">
+            Kita tayo sa screen bukas... pero mas excited ako sa 18th kasi <b>makakasama na talaga kita. SE YOU BUBBY!!</b>
+        </p>
+        <div class="hint-text" id="vdayHint">
+            ✨ P.S. Balik ka sa page na to bukas once the timer hits <b>ZERO</b> 😘✨
+        </div>
+    </div>
+</div>
+
+<div id="shuttlecock">🏸</div>
+
+<div class="footer">
+    <div>Made with ❤️ for Arcy Chloe C. Guba</div>
+    <div class="copyright-joke">
+        © 2026 My Heart Inc. All rights reserved. <br>
+        Warning: Unauthorized heart-stealing results in life-long lambingan.
+    </div>
+</div>
+
+<script>
+    function shootConfetti() {
+        for(let i=0; i<60; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + "vw";
+            c.style.top = "-10px";
+            c.style.backgroundColor = ["#ff4d6d", "#ffccd5", "#f2d74e", "#ffffff"][Math.floor(Math.random()*4)];
+            c.style.width = Math.random() * 8 + 4 + "px";
+            c.style.height = c.style.width;
+            c.style.animationDuration = Math.random() * 2 + 2 + "s";
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 4000);
+        }
+    }
+
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('floating-heart');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = Math.random() * 20 + 10 + "px";
+        heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4000);
+    }
+    setInterval(createHeart, 500);
+
+    let surpriseTriggered = false;
+    function updateTimer() {
+        const now = new Date();
+        const vDay = new Date(2026, 1, 14, 0, 0, 0); 
+        const diff = vDay - now;
+
+        if (diff <= 0) {
+            document.getElementById('timer').innerText = "HAPPY VALENTINE'S DAY, LOVE! ❤️";
+            const hint = document.getElementById('vdayHint');
+            if (hint) hint.innerHTML = "✨ SURPRISE! Check the confetti! ✨";
+            
+            if(!surpriseTriggered) {
+                shootConfetti();
+                surpriseTriggered = true;
+            }
+            return;
+        }
+
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff / (1000 * 60)) % 60);
+        const s = Math.floor((diff / 1000) % 60);
+        document.getElementById('timer').innerText = `KONTING TIIS NALANG: ${h}h ${m}m ${s}s`;
+    }
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const face = document.getElementById('face');
+    const sadEmojis = ["🥺", "😭", "😿", "💔", "😔", "😢", "🥀", "😟"];
+    let scale = 1;
+
+    function moveNo(e) {
+        if(e) e.preventDefault();
+        face.innerText = sadEmojis[Math.floor(Math.random() * sadEmojis.length)];
+        
+        const padding = 60; 
+        const yesRect = yesBtn.getBoundingClientRect();
+        
+        let x, y;
+        let isOverlapping = true;
+
+        // Collision Check: Keep calculating new X/Y until it's away from the Yes button
+        while (isOverlapping) {
+            x = Math.max(padding, Math.floor(Math.random() * (window.innerWidth - noBtn.offsetWidth - padding)));
+            y = Math.max(padding, Math.floor(Math.random() * (window.innerHeight - noBtn.offsetHeight - (padding * 2.5))));
+
+            // Check if the new X/Y coordinates overlap with the Yes button's current area
+            const buffer = 20; // Extra breathing room
+            isOverlapping = (
+                x < yesRect.right + buffer &&
+                x + noBtn.offsetWidth > yesRect.left - buffer &&
+                y < yesRect.bottom + buffer &&
+                y + noBtn.offsetHeight > yesRect.top - buffer
+            );
+        }
+        
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = x + 'px';
+        noBtn.style.top = y + 'px';
+
+        scale += 0.22;
+        yesBtn.style.transform = `scale(${scale})`;
+        if(scale > 1.6) yesBtn.innerText = "SIGE NA PLEASE! ❤️";
+        if(scale > 2.8) yesBtn.innerText = "CLICK ME! 😭";
+    }
+
+    noBtn.addEventListener('mouseover', moveNo);
+    noBtn.addEventListener('touchstart', moveNo, {passive: false});
+
+    function showPlanner() {
+        document.getElementById('ask').style.display = 'none';
+        document.getElementById('planner').style.display = 'block';
+        face.innerText = "💖";
+        shootConfetti();
+    }
+
+    function finalize(choice) {
+        document.getElementById('planner').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+        document.getElementById('finalMsg').innerText = `Handa na Canton ko, handa na Fries mo. Game sa ${choice}!`;
+        document.body.style.backgroundColor = "#d8f3dc"; 
+        document.getElementById('vdayHint').style.display = 'block'; 
+        
+        const sc = document.getElementById('shuttlecock');
+        sc.style.display = 'block';
+        let pos = 0;
+        setInterval(() => {
+            pos += 4;
+            sc.style.left = pos + 'px';
+            sc.style.top = (Math.sin(pos / 30) * 50 + 150) + 'px';
+            if (pos > window.innerWidth) pos = -50;
+        }, 30);
+    }
+</script>
+
+</body>
+</html>
